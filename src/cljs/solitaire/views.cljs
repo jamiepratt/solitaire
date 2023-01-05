@@ -26,11 +26,13 @@
   (let [[width height] @(rf/subscribe [::subs/board-dimensions])]
     (into
      [:div.board
-      {:style {:grid-template-columns (string/join " " (repeat width "1fr"))
-               :grid-template-rows (string/join " " (repeat height "1fr"))}}]
-     (for [y (range height)
-           x (range width)]
-       [field-view @(rf/subscribe [::subs/field x y]) fields-clickable]))))
+      {:style (merge {:grid-template-columns (string/join " " (repeat width "1fr"))
+                      :grid-template-rows (string/join " " (repeat height "1fr"))}
+                     (when (not= :in-progress @(rf/subscribe [::subs/status]))
+                       {:opacity "40%"}))}]
+      (for [y (range height)
+            x (range width)]
+        [field-view @(rf/subscribe [::subs/field x y]) fields-clickable]))))
 
 (defn pegs-count []
   [:h1 "Pegs left: " @(rf/subscribe [::subs/pegs-count])])

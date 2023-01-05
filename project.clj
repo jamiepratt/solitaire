@@ -1,17 +1,18 @@
 (defproject solitaire "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.773"
+  :dependencies [[org.clojure/clojure "1.11.1"]
+                 [org.clojure/clojurescript "1.11.60"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
-                 [thheller/shadow-cljs "2.11.7"]
-                 [reagent "0.10.0"]
-                 [re-frame "1.1.2"]
-                 [day8.re-frame/tracing "0.6.0"]]
+                 [thheller/shadow-cljs "2.20.17"]
+                 [reagent "1.1.1"]
+                 [re-frame "1.3.0"]
+                 [day8.re-frame/tracing "0.6.2"]]
 
   :plugins [[lein-shadow "0.3.1"]
             
-            [lein-shell "0.5.0"]]
+            [lein-shell "0.5.0"]
+            [lein-ancient "1.0.0-RC3"]]
 
   :min-lein-version "2.9.0"
 
@@ -72,8 +73,8 @@
 
   :profiles
   {:dev
-   {:dependencies [[binaryage/devtools "1.0.2"]
-                   [day8.re-frame/re-frame-10x "0.7.0"]]
+   {:dependencies [[binaryage/devtools "1.0.6"]
+                   [day8.re-frame/re-frame-10x "1.5.0"]]
     :source-paths ["dev"]}
 
    :prod {}

@@ -3,7 +3,8 @@
    [re-frame.core :as rf]
    [solitaire.board :as board]
    [solitaire.db :as db]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]))
+   [day8.re-frame.tracing :refer-macros [fn-traced]]
+   [day8.re-frame.undo :as undo]))
 
 (rf/reg-event-db
  ::initialize-db
@@ -47,6 +48,7 @@
 
 (rf/reg-event-fx
  ::make-move
+ (undo/undoable "move")
  (fn [{{:keys [board] :as db} :db} [_ x y]]
    (let [source (:selected-field db)
          target [x y]]

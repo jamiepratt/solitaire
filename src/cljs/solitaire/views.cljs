@@ -38,6 +38,10 @@
 (defn game []
   [:div
    [pegs-count]
+   [:button (merge {:on-click (fn [_] (rf/dispatch [:undo]))}
+                   (when (not @(rf/subscribe [:undos?])) {:disabled true})) "Undo"]
+   [:button (merge {:on-click (fn [_] (rf/dispatch [:redo]))}
+                   (when (not @(rf/subscribe [:redos?])) {:disabled true})) "Redo"]
    [board-view true]])
 
 (defn play-button []

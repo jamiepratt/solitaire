@@ -11,10 +11,11 @@
  (fn-traced [_ _]
             (assoc db/default-db
                    :board (board/initial-board-no (:board-no db/default-db)))))
-(rf/reg-event-db
+(rf/reg-event-fx
  ::start
- (fn [db _]
-   (assoc db :status :in-progress)))
+ (fn [{:keys [db]} _]
+   {:db (assoc db :status :in-progress)
+    :fx [[:clear-undo-history]]}))
 
 (rf/reg-event-db
  ::change-board

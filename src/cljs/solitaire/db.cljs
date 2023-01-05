@@ -1,5 +1,5 @@
-(ns solitaire.db
-  (:require [solitaire.board :as board]))
+(ns solitaire.db)
 
 (def default-db
-  {:status :not-started, :board board/initial-board})
+  {:status :not-started
+   :board-no 2})

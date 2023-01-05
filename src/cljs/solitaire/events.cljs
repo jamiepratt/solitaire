@@ -8,14 +8,29 @@
 (rf/reg-event-db
  ::initialize-db
  (fn-traced [_ _]
-            db/default-db))
-
+            (assoc db/default-db
+                   :board (board/initial-board-no (:board-no db/default-db)))))
 (rf/reg-event-db
  ::start
  (fn [db _]
+   (assoc db :status :in-progress)))
+
+(rf/reg-event-db
+ ::change-board
+ (fn [{:keys [board-no] :as db} _]
+   (if-let [next-board (board/initial-board-no (inc board-no))]
+     (assoc db :board next-board
+               :board-no (inc board-no))
+     (assoc db :board (board/initial-board-no 0)
+               :board-no 0))))
+
+(rf/reg-event-db
+ ::again
+ (fn [{:keys [board-no] :as db} _]
    (assoc db
-          :board board/initial-board
-          :status :in-progress)))
+          :board (board/initial-board-no board-no)
+          :status :not-started)))
+
 
 (rf/reg-event-db
  ::select-field
@@ -28,8 +43,7 @@
 (rf/reg-event-fx
  ::end-game
  (fn [{db :db} _]
-   {:db (assoc db :status :game-over)
-    :alert "Game over!"}))
+   {:db (assoc db :status :game-over)}))
 
 (rf/reg-event-fx
  ::make-move

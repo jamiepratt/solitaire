@@ -10,18 +10,19 @@
 (defn field-empty [{:keys [x y]}]
   [:div.field {:on-click #(rf/dispatch [::events/make-move x y])}])
 
-(defn field-peg [{:keys [selected? x y]}]
+(defn field-peg [{:keys [selected? x y]} clickable]
   [:div.field
-   [:div.peg {:class (when selected? "peg--selected")
-              :on-click #(rf/dispatch [::events/select-field x y])}]])
+   [:div.peg (merge {:class (when selected? "peg--selected")}
+                    (when clickable 
+                      {:on-click #(rf/dispatch [::events/select-field x y])}))]])
 
-(defn field-view [{:keys [type selected?] :as field}]
+(defn field-view [{:keys [type] :as field} clickable]
   (case type
     :blocked [field-blocked]
     :empty [field-empty field]
-    :peg [field-peg field]))
+    :peg [field-peg field clickable]))
 
-(defn board-view []
+(defn board-view [fields-clickable]
   (let [[width height] @(rf/subscribe [::subs/board-dimensions])]
     (into
      [:div.board
@@ -29,31 +30,44 @@
                :grid-template-rows (string/join " " (repeat height "1fr"))}}]
      (for [y (range height)
            x (range width)]
-       [field-view @(rf/subscribe [::subs/field x y])]))))
+       [field-view @(rf/subscribe [::subs/field x y]) fields-clickable]))))
 
 (defn pegs-count []
   [:h1 "Pegs left: " @(rf/subscribe [::subs/pegs-count])])
 
 (defn game []
   [:div
-   [board-view]
-   [pegs-count]])
+   [pegs-count]
+   [board-view true]])
 
 (defn play-button []
-  [:button {:on-click #(rf/dispatch [::events/start])} "Play"])
+  [:button {:on-click #(rf/dispatch [::events/start])} "Start game"])
 
-(defn menu [status]
+(defn play-again-button []
+  [:button {:on-click #(rf/dispatch [::events/again])} "Play again"])
+
+
+(defn game-over []
+  [:div
+   [:h1 "Game over, " @(rf/subscribe [::subs/pegs-count]) " pegs left"]
+   [play-again-button]
+   [board-view false]])
+
+(defn change-board []
+  [:button {:on-click #(rf/dispatch [::events/change-board])} "Change board"])
+
+
+(defn menu []
   [:div.menu
-   (if (= status :not-started)
-     [:h1 "Welcome to Solitaire!"]
-     [:div
-      [:h1 "Game over, " @(rf/subscribe [::subs/pegs-count]) " pegs left"]])
-   [play-button]])
+   [:div
+    [:h1 "Welcome to Solitaire!"]
+    [play-button][change-board]]
+    [board-view false]])
 
 (defn main-panel []
   [:div
    (case @(rf/subscribe [::subs/status])
-     :not-started [menu :not-started]
-     :game-over [menu :game-over]
+     :not-started [menu]
+     :game-over   [game-over]
      :in-progress [game]
      nil)])

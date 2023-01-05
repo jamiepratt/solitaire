@@ -1,13 +1,8 @@
 (ns solitaire.board)
 
 ;;; Layout
-(def initial-layout
-  '[[[. o .]
-     [. o .]
-     [o _ o]
-     [. o .]
-     [. o .]]
-    [[. . o . .]
+(def layouts
+  '[[[. . o . .]
      [. . o . .]
      [o o _ o o]
      [. . o . .]
@@ -23,13 +18,22 @@
      [o o o _ o o o]
      [o o o o o o o]
      [. . o o o . .]
+     [. . o o o . .]]
+    [[. . o o o . .]
+     [. o o o o o .]
+     [o o o o o o o]
+     [o o o _ o o o]
+     [o o o o o o o]
+     [. o o o o o .]
      [. . o o o . .]]])
 
 
 (defn layout->board [board]
   (mapv (partial mapv {'. :blocked, 'o :peg, '_ :empty}) board))
 
-(def initial-board (layout->board (get initial-layout 2)))
+(defn initial-board-no [n]
+  (when-let [layout (get layouts n)]
+    (layout->board layout)))
 
 ;;; Accessing the board
 
@@ -93,9 +97,6 @@
 (defn game-over? [board]
   (empty? (pieces-that-can-move board)))
 
-(comment (pieces-that-can-move initial-board)
-         (map #(list % (legal-targets initial-board %))
-              (pieces-that-can-move initial-board)))
 
 (defn find-possible-next-moves [board]
   (for [source (pieces-that-can-move board)
@@ -116,22 +117,3 @@
                   (all-possible-series-of-moves next-board next-moves-so-far))))
             next-boards next-moves)))
 
-
-(comment
-  (all-possible-series-of-moves initial-board [])
-  (find-possible-next-moves initial-board)
-  (map (fn [[s t]] (move initial-board s t)) *1)
-  (mapcat (fn [next-board move]
-            (let [next-moves-so-far (conj [] move)]
-              (if true
-                [next-moves-so-far]
-                (all-possible-series-of-moves next-board next-moves-so-far))))
-          *1 *2)
-  (find-possible-next-moves *1)
-  (apply (partial move *2) (first *1))
-  (find-possible-next-moves *1)
-  (game-over? *2)
-  (take 2 (first (sort-by count > (all-possible-series-of-moves initial-board []))))
-
-  (flatten (for [i (range 10)]
-             [(range i)])))

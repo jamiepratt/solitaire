@@ -4,8 +4,8 @@
 
 .board {
     display: grid;
-    width: 500px;
-    height: 500px;
+    width: 600px;
+    height: 600px;
     background-color: #ccc;
     grid-gap: 2px;
     /* This styling assumes that the board is 7x7, for simplicity.

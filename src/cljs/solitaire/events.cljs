@@ -3,14 +3,14 @@
    [re-frame.core :as rf]
    [solitaire.board :as board]
    [solitaire.db :as db]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]
-   [day8.re-frame.undo :as undo]))
+   [day8.re-frame.undo :as undo]
+   [solitaire.layouts :as layouts]))
 
 (rf/reg-event-db
  ::initialize-db
- (fn-traced [_ _]
-            (assoc db/default-db
-                   :board (board/initial-board-no (:board-no db/default-db)))))
+ (fn [_ _]
+   (assoc db/default-db
+          :board (layouts/initial-board (:board-no db/default-db)))))
 (rf/reg-event-fx
  ::start
  (fn [{:keys [db]} _]
@@ -20,17 +20,17 @@
 (rf/reg-event-db
  ::change-board
  (fn [{:keys [board-no] :as db} _]
-   (if-let [next-board (board/initial-board-no (inc board-no))]
+   (if-let [next-board (layouts/initial-board (inc board-no))]
      (assoc db :board next-board
                :board-no (inc board-no))
-     (assoc db :board (board/initial-board-no 0)
+     (assoc db :board (layouts/initial-board 0)
                :board-no 0))))
 
 (rf/reg-event-db
  ::again
  (fn [{:keys [board-no] :as db} _]
    (assoc db
-          :board (board/initial-board-no board-no)
+          :board (layouts/initial-board board-no)
           :status :not-started)))
 
 

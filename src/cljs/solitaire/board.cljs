@@ -1,40 +1,5 @@
 (ns solitaire.board)
 
-;;; Layout
-(def layouts
-  '[[[. . o . .]
-     [. . o . .]
-     [o o _ o o]
-     [. . o . .]
-     [. . o . .]]
-    [[. o o o .]
-     [o o o o o]
-     [o o _ o o]
-     [o o o o o]
-     [. o o o .]]
-    [[. . o o o . .]
-     [. . o o o . .]
-     [o o o o o o o]
-     [o o o _ o o o]
-     [o o o o o o o]
-     [. . o o o . .]
-     [. . o o o . .]]
-    [[. . o o o . .]
-     [. o o o o o .]
-     [o o o o o o o]
-     [o o o _ o o o]
-     [o o o o o o o]
-     [. o o o o o .]
-     [. . o o o . .]]])
-
-
-(defn layout->board [board]
-  (mapv (partial mapv {'. :blocked, 'o :peg, '_ :empty}) board))
-
-(defn initial-board-no [n]
-  (when-let [layout (get layouts n)]
-    (layout->board layout)))
-
 ;;; Accessing the board
 
 (defn dimensions [board]
